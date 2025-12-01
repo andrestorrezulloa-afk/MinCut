@@ -16,8 +16,8 @@ public:
    
     corteMinimo()
     {
-        grafo = nullptr;
-        srand((unsigned int)time(nullptr)); 
+        grafo = NULL;
+        srand((unsigned int)time(NULL));
     }
 
     
@@ -30,7 +30,7 @@ public:
     T sacarNodoAleatorio()
     {
         T Aux = T();
-        if (grafo != nullptr) {
+        if (grafo != NULL) {
             T* vec = grafo->getVectorNodos();
             int indice = rand() % 5; //Posible cambio para que sea dinamico en caso de que contraiga lo requiera
              Aux = vec[indice];
@@ -47,13 +47,13 @@ public:
             Lista8<Vertice<T>>* lista = grafo->getHash().accederHash(nodo);
             if (lista != NULL || lista->getPrimero() != NULL) {
                 Caja<Vertice<T>>* aux = lista->getPrimero();
-                while (aux != nullptr)
+                while (aux != NULL)
                 {
                     if (aux->getValor().getNombre() == nodo) break;
                     aux = aux->getSiguiente();
                 }
 
-                if (aux != nullptr) {
+                if (aux != NULL) {
                     Lista8<T>& adyacentes = aux->getValor().getAdyacentes();
                     int n = adyacentes.getContador();
                     if (n == 0) return T();

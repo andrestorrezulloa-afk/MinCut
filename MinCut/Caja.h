@@ -14,11 +14,12 @@ private:
 public:
     Caja();
     Caja(T& valor, Caja<T>* anterior = nullptr, Caja<T>* siguiente = nullptr);
-    void setSiguiente(Caja<T>* CajaE);
-    void setAnterior(Caja<T>* CajaE);
     T& getValor();                 
     Caja<T>* getSiguiente();
     Caja<T>* getAnterior();
+    void setSiguiente(Caja<T>* CajaE);
+    void setAnterior(Caja<T>* CajaE);
+    void setValor(T valor);
 };
 
 template<typename T>
@@ -65,4 +66,10 @@ template<typename T>
 inline Caja<T>* Caja<T>::getAnterior()
 {
     return anterior;
+}
+
+template<typename T>
+inline void Caja<T>::setValor(T valor)
+{
+    this->valor = valor;
 }

@@ -13,9 +13,14 @@ private:
 public:
     Vertice();
     Vertice(T Nombre);
-    T getNombre() const;
+    T getNombre();
     void setNombre(T Nombre);
     Lista8<string>& getAdyacentes();
+
+    bool operator==(const Vertice<T>& otro) const {
+        return Nombre == otro.Nombre;
+    }
+
     template<typename U>
     friend ostream& operator<<(ostream& os, const Vertice<U>& v);
 };
@@ -33,10 +38,11 @@ Vertice<T>::Vertice(T Nombre)
 }
 
 template<typename T>
-T Vertice<T>::getNombre() const
+inline T Vertice<T>::getNombre()
 {
     return Nombre;
 }
+
 
 template<typename T>
 void Vertice<T>::setNombre(T Nombre)

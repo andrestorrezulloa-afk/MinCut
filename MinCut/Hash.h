@@ -19,9 +19,7 @@ public:
     Hash();
     ~Hash();
     int FuncionHash(string Nombre);
-    Lista8<T>* accederHash( string& nombre) {
-        return &Vec[FuncionHash(nombre)];
-    }
+    Lista8<T>* accederHash(string& nombre);
     void Insertar(T objeto);
     bool Eliminar(string nombre);
     void MostrarHash();
@@ -45,6 +43,12 @@ int Hash<T>::FuncionHash(string Nombre)
 }
 
 template<class T>
+inline Lista8<T>* Hash<T>::accederHash(string& nombre)
+{
+    return &Vec[FuncionHash(nombre)];
+}
+
+template<class T>
 void Hash<T>::Insertar(T objeto)
 {
     int pos = FuncionHash(objeto.getNombre());
@@ -62,7 +66,7 @@ void Hash<T>::MostrarHash()
     for (int i = 0; i < TAM; i++)
     {
         Caja<T>* auxNodo = Vec[i].getPrimero();
-        while (auxNodo != nullptr)
+        while (auxNodo != NULL)
         {
             T& nodo = auxNodo->getValor(); 
             cout << nodo.getNombre() << ": ";

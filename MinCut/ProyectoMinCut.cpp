@@ -14,6 +14,8 @@ int main()
     corteMinimo<string> cm;   // constructor clásico
     cm.setGrafo(&g);          // asignás el grafo después
 
+    for (int i = 0; i < 3;i++) {
+
     string nodo = cm.sacarNodoAleatorio();
     cout << "\nNodo aleatorio seleccionado: " << nodo << endl;
 
@@ -23,6 +25,12 @@ int main()
     else
         cout << "El nodo " << nodo << " no tiene adyacencias." << endl;
 
+    
+        g.ContraerAristas(nodo, ady);
+        g.MostrarGrafo();
+        cout << endl;
+    }
+   
     return 0;
 }
 

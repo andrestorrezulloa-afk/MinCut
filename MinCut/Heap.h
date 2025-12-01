@@ -29,7 +29,7 @@ inline Heap<T>::Heap()
 {
     ultimo = 0;
     for (int i = 0; i < TAM; i++) {
-        vec[i] = nullptr;
+        vec[i] = NULL;
     }
 }
 
@@ -95,18 +95,18 @@ template<class T>
 inline Nodo2<T>* Heap<T>::Sacar()
 {
     if (ultimo == 0) {
-        return nullptr;
+        return NULL;
     }
 
     Nodo2<T>* minElemento = vec[1];
 
     if (ultimo == 1) {
-        vec[1] = nullptr;
+        vec[1] = NULL;
         ultimo = 0;
     }
     else {
         vec[1] = vec[ultimo];
-        vec[ultimo] = nullptr;
+        vec[ultimo] = NULL;
         ultimo -= 1;
         RecuperarArribaAbajo(1);
     }

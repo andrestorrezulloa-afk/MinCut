@@ -14,38 +14,42 @@ public:
     Lista8();
     void Insertar_Fin(T valor);
     void Insertar_Inicio(T valor);
+
     bool Eliminar_Fin();
     void Eliminar_Inicio();
     void EliminarTodo();
+
     Caja<T>* getPrimero();
     Caja<T>* getUltimo();
     Caja<T>* getPosicion(int posicion);
+
     Caja<T>* buscar(T valor, Caja<T>*& aux);
     bool buscarRec(T valor, Caja<T>*& aux);
+
     bool EliminarValor(T valor);
-    int getContador() { return contador; }
+    int getContador();
     void MostrarListaConsola(); 
 };
 
 template<typename T>
 inline Lista8<T>::Lista8()
 {
-    this->primero = nullptr;
-    this->ultimo = nullptr;
+    this->primero = NULL;
+    this->ultimo = NULL;
     this->contador = 0;
 }
 
 template<typename T>
 inline void Lista8<T>::Insertar_Fin(T valor)
 {
-    if (primero == nullptr)
+    if (primero == NULL)
     {
-        primero = new Caja<T>(valor, nullptr, nullptr);
+        primero = new Caja<T>(valor, NULL, NULL);
         ultimo = primero;
         contador++;
     }
     else {
-        ultimo->setSiguiente(new Caja<T>(valor, ultimo, nullptr));
+        ultimo->setSiguiente(new Caja<T>(valor, ultimo, NULL));
         ultimo = ultimo->getSiguiente();
         contador++;
     }
@@ -54,14 +58,14 @@ inline void Lista8<T>::Insertar_Fin(T valor)
 template<typename T>
 inline void Lista8<T>::Insertar_Inicio(T valor)
 {
-    if (primero == nullptr) {
-        primero = new Caja<T>(valor, nullptr, nullptr);
+    if (primero == NULL) {
+        primero = new Caja<T>(valor, NULL, NULL);
         ultimo = primero;
         contador++;
     }
     else {
         Caja<T>* aux = primero;
-        primero = new Caja<T>(valor, nullptr, primero);
+        primero = new Caja<T>(valor, NULL, primero);
         aux->setAnterior(primero);
         contador++;
     }
@@ -72,18 +76,18 @@ inline bool Lista8<T>::Eliminar_Fin()
 {
     bool control = false;
 
-    if (primero == ultimo && primero != nullptr) {
+    if (primero == ultimo && primero != NULL) {
         delete primero;
-        primero = nullptr;
-        ultimo = nullptr;
+        primero = NULL;
+        ultimo = NULL;
         control = true;
         contador--;
     }
     else {
-        if (primero != nullptr) {
+        if (primero != NULL) {
             Caja<T>* aux = ultimo;
             ultimo = ultimo->getAnterior();
-            if (ultimo) ultimo->setSiguiente(nullptr);
+            if (ultimo) ultimo->setSiguiente(NULL);
             delete aux;
             control = true;
             contador--;
@@ -95,17 +99,17 @@ inline bool Lista8<T>::Eliminar_Fin()
 template<typename T>
 inline void Lista8<T>::Eliminar_Inicio()
 {
-    if (primero == ultimo && primero != nullptr) {
+    if (primero == ultimo && primero != NULL) {
         delete primero;
-        primero = nullptr;
-        ultimo = nullptr;
+        primero = NULL;
+        ultimo = NULL;
         contador--;
     }
     else {
-        if (primero != nullptr) {
+        if (primero != NULL) {
             Caja<T>* aux = primero;
             primero = primero->getSiguiente();
-            if (primero) primero->setAnterior(nullptr);
+            if (primero) primero->setAnterior(NULL);
             delete aux;
             contador--;
         }
@@ -115,7 +119,7 @@ inline void Lista8<T>::Eliminar_Inicio()
 template<typename T>
 inline void Lista8<T>::EliminarTodo()
 {
-    while (primero != nullptr) {
+    while (primero != NULL) {
         Eliminar_Inicio();
     }
     contador = 0;
@@ -138,7 +142,7 @@ inline Caja<T>* Lista8<T>::getPosicion(int posicion)
 {
     Caja<T>* aux = primero;
     int cont = 0;
-    while (cont != posicion && aux != nullptr) {
+    while (cont != posicion && aux != NULL) {
         aux = aux->getSiguiente();
         cont++;
     }
@@ -148,8 +152,8 @@ inline Caja<T>* Lista8<T>::getPosicion(int posicion)
 template<typename T>
 inline Caja<T>* Lista8<T>::buscar(T valor, Caja<T>*& aux)
 {
-    Caja<T>* control = nullptr;
-    while (aux != nullptr) {
+    Caja<T>* control = NULL;
+    while (aux != NULL) {
         if (valor == aux->getValor()) {
             control = aux;
             return control;
@@ -162,7 +166,7 @@ inline Caja<T>* Lista8<T>::buscar(T valor, Caja<T>*& aux)
 template<typename T>
 inline bool Lista8<T>::buscarRec(T valor, Caja<T>*& aux)
 {
-    if (aux == nullptr) return false;
+    if (aux == NULL) return false;
     if (valor == aux->getValor()) return true;
     aux = aux->getSiguiente();
     return buscarRec(valor, aux);
@@ -174,11 +178,11 @@ inline bool Lista8<T>::EliminarValor(T valor)
     Caja<T>* aux = primero;
     bool control = false;
 
-    if (primero == nullptr) {
+    if (primero == NULL) {
         return false;
     }
     Caja<T>* resul = buscar(valor, aux);
-    if (resul != nullptr) {
+    if (resul != NULL) {
         if (resul == primero) {
             Eliminar_Inicio();
             control = true;
@@ -201,13 +205,19 @@ inline bool Lista8<T>::EliminarValor(T valor)
 }
 
 template<typename T>
+inline int Lista8<T>::getContador()
+{
+    return contador;
+}
+
+template<typename T>
 inline void Lista8<T>::MostrarListaConsola()
 {
     Caja<T>* aux = primero;
     bool first = true;
-    while (aux != nullptr)
+    while (aux != NULL)
     {
-        if (!first) cout << " -> ";
+        if (!first) cout << ", ";
         cout << aux->getValor(); 
         first = false;
         aux = aux->getSiguiente();
