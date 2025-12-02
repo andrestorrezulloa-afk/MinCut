@@ -24,13 +24,23 @@ public:
     Grafo<T> getGrafo();
     void FuncionKarger();
 
-    corteMinimo()
-    {
-        srand((unsigned int)time(NULL));
-    }
+    corteMinimo();
 
-    T sacarNodoAleatorio(Grafo<T>& grafoParam, int cantidadDeNodos)
-    {
+    T sacarNodoAleatorio(Grafo<T>& grafoParam, int cantidadDeNodos);
+    
+
+    T sacarAdyacenciaAleatoria(Grafo<T>& grafoParam, T nodo);
+    
+};
+template<typename T>
+inline corteMinimo<T>::corteMinimo()
+{
+    srand((unsigned int)time(NULL));
+}
+template<typename T>
+inline T corteMinimo<T>::sacarNodoAleatorio(Grafo<T>& grafoParam, int cantidadDeNodos)
+{
+    
         T Aux = T();
         if (cantidadDeNodos > 0) {
             string* vec = grafoParam.getVectorNodos();
@@ -38,10 +48,12 @@ public:
             Aux = vec[indice];
         }
         return Aux;
-    }
-
-    T sacarAdyacenciaAleatoria(Grafo<T>& grafoParam, T nodo)
-    {
+    
+}
+template<typename T>
+inline T corteMinimo<T>::sacarAdyacenciaAleatoria(Grafo<T>& grafoParam, T nodo)
+{
+    
         T Aux = T();
 
         Lista8<Vertice<T>>* lista = grafoParam.getHash().accederHash(nodo);
@@ -64,9 +76,8 @@ public:
             }
         }
         return Aux;
-    }
-};
-
+    
+}
 template<typename T>
 inline void corteMinimo<T>::leerArchivo()
 {
@@ -109,27 +120,32 @@ inline void corteMinimo<T>::FuncionKarger()
             string ady = sacarAdyacenciaAleatoria(grafoCopia, nodo);
             if(b==0)  cout << "Nodos iniciales: " << "nodo: " << nodo << " Adyacente: " << ady << endl;
            
-            if (!ady.empty()) {
+            if (!ady.empty()) 
+            {
                 b++;
                 grafoCopia.ContraerAristas(nodo, ady);
                 contracciones++;
             }
-            else {
+            else 
+            {
                 
                 break;
             }
         }
 
         int corteActual = 0;
-        if (grafoCopia.getNumDeVerticesActuales() == 2) {
+        if (grafoCopia.getNumDeVerticesActuales() == 2) 
+        {
             b = 0;
             string* nodos = grafoCopia.getVectorNodos();
             if (nodos != NULL) {
                 Lista8<Vertice<T>>* lista = grafoCopia.getHash().accederHash(nodos[0]);
-                if (lista != NULL && lista->getPrimero() != NULL) {
+                if (lista != NULL && lista->getPrimero() != NULL) 
+                {
                     Caja<Vertice<T>>* vertice = lista->getPrimero();
                     while (vertice != NULL) {
-                        if (vertice->getValor().getNombre() == nodos[0]) {
+                        if (vertice->getValor().getNombre() == nodos[0]) 
+                        {
                             corteActual = vertice->getValor().getAdyacentes().getContador();
                             break;
                         }
@@ -138,10 +154,12 @@ inline void corteMinimo<T>::FuncionKarger()
                 }
             }
         }
-
+        cout << "Grafo Final" << endl;
+        grafoCopia.MostrarGrafo();
         cout << "Contracciones: " << contracciones << ", Corte: " << corteActual;
 
-        if (corteActual < mejorCorte) {
+        if (corteActual < mejorCorte) 
+        {
             mejorCorte = corteActual;
             iteracionMejor = i + 1;
             cout << " ¡NUEVO MEJOR CORTE!";
@@ -160,3 +178,5 @@ inline void corteMinimo<T>::FuncionKarger()
     cout << "Tiempo total de ejecucion: " << duracion.count() << " milisegundos" << endl;
     cout << "Tiempo total de ejecucion: " << duracion.count() / 1000.0 << " segundos" << endl;
 }
+
+
