@@ -4,6 +4,7 @@
 #include <string>
 #include "Grafo.h"
 #include "Lista8.h"
+#include "Heap.h"
 
 using namespace std;
 
@@ -12,8 +13,12 @@ class corteMinimo
 {
 private:
     Grafo<T>* grafo; 
+    Heap<T>* HeapAuxiliar;
 public:
    
+    Grafo<T>* getGrafo();
+    void FuncionKarger();
+
     corteMinimo()
     {
         grafo = NULL;
@@ -67,3 +72,41 @@ public:
 		return Aux;
     }
 };
+
+template<typename T>
+inline Grafo<T>* corteMinimo<T>::getGrafo()
+{
+    return grafo;
+}
+
+template<typename T>
+inline void corteMinimo<T>::FuncionKarger()
+{
+    for () {
+        
+        grafo.LeerArchivo();
+        // Copia
+        grafo.MostrarGrafo();
+
+        while (g.getNumDeVerticesActuales() > 2) {
+
+            string nodo = cm.sacarNodoAleatorio();
+            cout << "\nNodo aleatorio seleccionado: " << nodo << endl;
+
+            string ady = cm.sacarAdyacenciaAleatoria(nodo);
+
+            if (!ady.empty())
+                cout << "Adyacencia aleatoria del nodo " << nodo << ": " << ady << endl;
+            else
+                cout << "El nodo " << nodo << " no tiene adyacencias." << endl;
+
+
+            grafo.ContraerAristas(nodo, ady);
+            grafo.MostrarGrafo();
+            grafo.getVectorNodos();
+            cout << endl;
+        }
+    }
+}
+
+

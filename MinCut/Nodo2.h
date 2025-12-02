@@ -8,7 +8,7 @@ template <class T>
 class Nodo2
 {
 private:
-    T key;    
+    int key; // Cantidad de vertices   
     bool marca;
     T Vo;     // Vértice Origen
     T Vd;     // Vértice Destino

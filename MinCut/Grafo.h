@@ -154,7 +154,7 @@ inline void Grafo<T>::EliminarDeVec(T elemento)
 }
 
 template<typename T>
-inline void Grafo<T>::ContraerAristas(T u, T v)
+inline void Grafo<T>::ContraerAristas(T u, T v) // U nodo que se elije y V la adyacencia de U
 {
     // Si el nodo y el adyacente no son iguales
     if (u != v) {
@@ -174,14 +174,14 @@ inline void Grafo<T>::ContraerAristas(T u, T v)
                 Lista8<T>& adyV = nodoV->getValor().getAdyacentes();
 
                 // Eliminar nodo de la lista de adyaciencia 
-                adyU.EliminarValor(v);
+                while (adyU.EliminarValor(v)) {}
 
                 // Procesar cada adyacente del nodo a borrar
                 Caja<T>* adyAux = adyV.getPrimero();
                 while (adyAux != NULL) {
                     T w = adyAux->getValor(); // Auxiliar para buscar cada uno de las adyaciencias de v
 
-                    if (w != u && w != v) {
+                    if (w != u) { // No puede haber autociclos
                         // Encontrar nodo w
                         Lista8<Vertice<T>>* listaW = grafo.accederHash(w);
 
@@ -192,8 +192,9 @@ inline void Grafo<T>::ContraerAristas(T u, T v)
                                 // En la lista de w cambiamos v (Nodo a borrar) por u (Nodo donde se combinara) 
 
                                 Lista8<T>& adyW = nodoW->getValor().getAdyacentes();
-                                Caja<T>* adyWaux = adyW.getPrimero();
 
+                                // Intercambiar valores iguales 
+                                Caja<T>* adyWaux = adyW.getPrimero();
                                 while (adyWaux != NULL) {
                                     if (adyWaux->getValor() == v)
                                         adyWaux->setValor(u);
@@ -209,8 +210,6 @@ inline void Grafo<T>::ContraerAristas(T u, T v)
                     }
                     adyAux = adyAux->getSiguiente();
                 }
-                // Eliminar adyacenciasAUnoMismo
-                adyU.EliminarValor(u);
             }
         }
     }
