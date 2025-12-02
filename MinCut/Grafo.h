@@ -239,35 +239,45 @@ inline void Grafo<T>::EliminarDeVec(T elemento)
 }
 
 template<typename T>
-inline void Grafo<T>::ContraerAristas(T u, T v)
+inline void Grafo<T>::ContraerAristas(T u, T v) // U nodo que se elije y V la adyacencia de U
 {
+    // Si el nodo y el adyacente no son iguales
     if (u != v) {
+        // Se busca en la hash ambos nodos
         Lista8<Vertice<T>>* listaU = grafo.accederHash(u);
         Lista8<Vertice<T>>* listaV = grafo.accederHash(v);
 
+        // Si existen las listas
         if (listaU != NULL && listaV != NULL) {
+            // Conseguir los nodos buscando en las coliciones del hash
             Caja<Vertice<T>>* nodoU = buscarVertice(listaU, u);
             Caja<Vertice<T>>* nodoV = buscarVertice(listaV, v);
 
             if (nodoU != NULL && nodoV != NULL) {
+                // Conseguimos sus listas de adyaciencia
                 Lista8<T>& adyU = nodoU->getValor().getAdyacentes();
                 Lista8<T>& adyV = nodoV->getValor().getAdyacentes();
 
+                // Eliminar nodo de la lista de adyaciencia 
                 while (adyU.EliminarValor(v)) {}
 
+                // Procesar cada adyacente del nodo a borrar
                 Caja<T>* adyAux = adyV.getPrimero();
                 while (adyAux != NULL) {
-                    T w = adyAux->getValor();
+                    T w = adyAux->getValor(); // Auxiliar para buscar cada uno de las adyaciencias de v
 
-                    if (w != u) {
+                    if (w != u) { // No puede haber autociclos
+                        // Encontrar nodo w
                         Lista8<Vertice<T>>* listaW = grafo.accederHash(w);
 
                         if (listaW != NULL) {
-                            Caja<Vertice<T>>* nodoW = listaW->getPrimero();
+                            Caja<Vertice<T>>* nodoW = buscarVertice(listaW, w);
 
-                            while (nodoW != NULL) {
+                            if (nodoW != NULL) {
+                                // En la lista de w cambiamos v (Nodo a borrar) por u (Nodo donde se combinara) 
                                 Lista8<T>& adyW = nodoW->getValor().getAdyacentes();
 
+                                // Intercambiar valores iguales 
                                 Caja<T>* adyWaux = adyW.getPrimero();
                                 while (adyWaux != NULL) {
                                     if (adyWaux->getValor() == v)
@@ -275,10 +285,10 @@ inline void Grafo<T>::ContraerAristas(T u, T v)
 
                                     adyWaux = adyWaux->getSiguiente();
                                 }
-
-                                nodoW = nodoW->getSiguiente();
                             }
+
                         }
+                        // Insertar W
                         adyU.Insertar_Fin(w);
                     }
                     adyAux = adyAux->getSiguiente();
