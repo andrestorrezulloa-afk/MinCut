@@ -167,8 +167,7 @@ inline void corteMinimo<T>::FuncionKarger()
         }
 
        
-        cout << "Grafo Final" << endl;
-        grafoCopia.MostrarGrafo();
+       
         cout << "Contracciones: " << contracciones << ", Corte: " << corteActual;
 
         // Actualizar el mejor corte si este es menor
