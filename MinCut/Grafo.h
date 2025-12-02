@@ -2,7 +2,7 @@
 #include <string>
 #include "Vertice.h"
 #include "Hash.h"
-#define TAM 5
+#define TAM 200
 using namespace std;
 #pragma once
 
@@ -26,6 +26,7 @@ public:
     int EncontrarIndiceVec(T elemento);
     void EliminarDeVec(T elemento);
     void ContraerAristas(T u, T v);
+    
 };
 
 template<typename T>
@@ -71,7 +72,7 @@ void Grafo<T>::Insertar(T Vo, T Vd)
 template<typename T>
 void Grafo<T>::LeerArchivo()
 {
-    ifstream archivo("Min_Cut_NOMBRES Prueba.txt");
+    ifstream archivo("MinCut.txt");
     if (archivo.is_open()) {
         string Arista, Adyacente;
         int indexVec = 0; // para ir llenando vec[]
@@ -98,7 +99,7 @@ void Grafo<T>::LeerArchivo()
 template<typename T>
 void Grafo<T>::MostrarGrafo()
 {
-    grafo.MostrarHash(); 
+    grafo.MostrarHash2(vec, NumDeVerticesActuales); 
 }
 
 template<typename T>

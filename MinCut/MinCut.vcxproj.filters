@@ -50,5 +50,6 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="Min_Cut_NOMBRES Prueba.txt" />
+    <Text Include="MinCut.txt" />
   </ItemGroup>
 </Project>

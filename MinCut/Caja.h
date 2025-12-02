@@ -14,7 +14,8 @@ private:
 public:
     Caja();
     Caja(T& valor, Caja<T>* anterior = nullptr, Caja<T>* siguiente = nullptr);
-    T& getValor();                 
+    T& getValor();
+    T getValorT() { return valor; }
     Caja<T>* getSiguiente();
     Caja<T>* getAnterior();
     void setSiguiente(Caja<T>* CajaE);

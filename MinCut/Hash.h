@@ -5,7 +5,7 @@
 #include "Lista8.h"
 #include <iostream>
 
-#define TAM 50
+#define TAM 401
 #define A 0.61803398875 
 
 using namespace std;
@@ -23,6 +23,7 @@ public:
     void Insertar(T objeto);
     bool Eliminar(string nombre);
     void MostrarHash();
+    void MostrarHash2(string vec[200],  int cantidad);
 };
 
 template<class T>
@@ -69,6 +70,21 @@ void Hash<T>::MostrarHash()
         while (auxNodo != NULL)
         {
             T& nodo = auxNodo->getValor(); 
+            cout << nodo.getNombre() << ": ";
+            nodo.getAdyacentes().MostrarListaConsola();
+            auxNodo = auxNodo->getSiguiente();
+        }
+    }
+}
+template<class T>
+void Hash<T>::MostrarHash2(string vec[200], int cantidad)
+{
+    for (int i = 0; i < cantidad; i++)
+    {
+        Caja<T>* auxNodo = Vec[FuncionHash(vec[i])].getPrimero();
+        while (auxNodo != NULL)
+        {
+            T& nodo = auxNodo->getValor();
             cout << nodo.getNombre() << ": ";
             nodo.getAdyacentes().MostrarListaConsola();
             auxNodo = auxNodo->getSiguiente();

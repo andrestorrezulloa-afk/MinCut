@@ -7,9 +7,11 @@ using namespace std;
 
 int main()
 {
-    Grafo<string> g;
     
-   
-    return 0;
+	corteMinimo<string> corte;
+	corte.leerArchivo();
+	
+    corte.FuncionKarger();
+	corte.getGrafo().MostrarGrafo();
+	return 0;
 }
-

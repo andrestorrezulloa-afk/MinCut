@@ -153,8 +153,10 @@ template<typename T>
 inline Caja<T>* Lista8<T>::buscar(T valor, Caja<T>*& aux)
 {
     Caja<T>* control = NULL;
-    while (aux != NULL) {
-        if (valor == aux->getValor()) {
+    while (aux != NULL) 
+    {
+        if (valor == aux->getValor()) 
+        {
             control = aux;
             return control;
         }

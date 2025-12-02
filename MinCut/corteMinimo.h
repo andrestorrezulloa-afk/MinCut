@@ -12,16 +12,16 @@ template<typename T>
 class corteMinimo
 {
 private:
-    Grafo<T>* grafo; 
+    Grafo<T> grafo; 
     Heap<T>* HeapAuxiliar;
 public:
-   
-    Grafo<T>* getGrafo();
+	void leerArchivo();
+    Grafo<T> getGrafo();
     void FuncionKarger();
 
     corteMinimo()
     {
-        grafo = NULL;
+      
         srand((unsigned int)time(NULL));
     }
 
@@ -32,14 +32,14 @@ public:
     }
 
     
-    T sacarNodoAleatorio()
+    T sacarNodoAleatorio(int cantidadDeNodos)
     {
         T Aux = T();
-        if (grafo != NULL) {
-            T* vec = grafo->getVectorNodos();
-            int indice = rand() % 5; //Posible cambio para que sea dinamico en caso de que contraiga lo requiera
+        
+            T* vec = grafo.getVectorNodos();
+            int indice = rand() % cantidadDeNodos; //Posible cambio para que sea dinamico en caso de que contraiga lo requiera
              Aux = vec[indice];
-        }
+        
         return Aux;
     }
 
@@ -47,9 +47,9 @@ public:
     T sacarAdyacenciaAleatoria(T nodo)
     {
 		T Aux = T();
-        if (grafo != NULL) {
+        
             // obtenemos la lista de vertices desde el Hash
-            Lista8<Vertice<T>>* lista = grafo->getHash().accederHash(nodo);
+            Lista8<Vertice<T>>* lista = grafo.getHash().accederHash(nodo);
             if (lista != NULL || lista->getPrimero() != NULL) {
                 Caja<Vertice<T>>* aux = lista->getPrimero();
                 while (aux != NULL)
@@ -68,13 +68,19 @@ public:
                     Aux = ady->getValor();
                 }
             }
-        }
+        
 		return Aux;
     }
 };
 
 template<typename T>
-inline Grafo<T>* corteMinimo<T>::getGrafo()
+inline void corteMinimo<T>::leerArchivo()
+{
+	grafo.LeerArchivo();
+}
+
+template<typename T>
+inline Grafo<T> corteMinimo<T>::getGrafo()
 {
     return grafo;
 }
@@ -82,31 +88,31 @@ inline Grafo<T>* corteMinimo<T>::getGrafo()
 template<typename T>
 inline void corteMinimo<T>::FuncionKarger()
 {
-    for () {
+  
+   
+    grafo.MostrarGrafo();
+
         
-        grafo.LeerArchivo();
-        // Copia
-        grafo.MostrarGrafo();
+    
+    while (grafo.getNumDeVerticesActuales() > 2) 
+    {
 
-        while (g.getNumDeVerticesActuales() > 2) {
+        string nodo = sacarNodoAleatorio(grafo.getNumDeVerticesActuales());
+        cout << "\nNodo aleatorio seleccionado: " << nodo << endl;
 
-            string nodo = cm.sacarNodoAleatorio();
-            cout << "\nNodo aleatorio seleccionado: " << nodo << endl;
-
-            string ady = cm.sacarAdyacenciaAleatoria(nodo);
-
-            if (!ady.empty())
-                cout << "Adyacencia aleatoria del nodo " << nodo << ": " << ady << endl;
-            else
-                cout << "El nodo " << nodo << " no tiene adyacencias." << endl;
+        string ady = sacarAdyacenciaAleatoria(nodo);
+        if (!ady.empty())
+            cout << "Adyacencia aleatoria del nodo " << nodo << ": " << ady << endl;
+        else
+            cout << "El nodo " << nodo << " no tiene adyacencias." << endl;
 
 
-            grafo.ContraerAristas(nodo, ady);
-            grafo.MostrarGrafo();
-            grafo.getVectorNodos();
-            cout << endl;
-        }
+        grafo.ContraerAristas(nodo, ady);
+        //grafo.MostrarGrafo();
+
+        cout << endl;
     }
+    
 }
 
 
