@@ -102,9 +102,11 @@ inline void corteMinimo<T>::FuncionKarger()
     int b = 0;                  // Control para imprimir solo los primeros nodos contraídos
     leerArchivo();              // Cargar el grafo original
 
-    
+   
+    for (int i = 0; i < 50000; i++)
     {
         cout << "\n--- Iteracion " << (i + 1) << " ---" << endl;
+
         // Copia del grafo original (cada ejecución debe partir de cero)
         Grafo<T> grafoCopia = grafoOriginal;
 
@@ -124,12 +126,12 @@ inline void corteMinimo<T>::FuncionKarger()
             if (!ady.empty())
             {
                 b++;
-                grafoCopia.ContraerAristas(nodo, ady); 
+                grafoCopia.ContraerAristas(nodo, ady);  // Contracción de aristas (paso principal del algoritmo)
                 contracciones++;
             }
             else
             {
-         
+                
                 break;
             }
         }
@@ -164,7 +166,7 @@ inline void corteMinimo<T>::FuncionKarger()
             }
         }
 
-        // Mostrar resultado parcial de la iteración
+       
         cout << "Grafo Final" << endl;
         grafoCopia.MostrarGrafo();
         cout << "Contracciones: " << contracciones << ", Corte: " << corteActual;
@@ -191,5 +193,6 @@ inline void corteMinimo<T>::FuncionKarger()
     cout << "Tiempo total de ejecucion: " << duracion.count() << " milisegundos" << endl;
     cout << "Tiempo total de ejecucion: " << duracion.count() / 1000.0 << " segundos" << endl;
 }
+
 
 
