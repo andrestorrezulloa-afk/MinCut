@@ -1,5 +1,6 @@
 #include <unordered_map>
 #include <string>
+#include <fstream>
 #include "Vertice.h"
 #include "Hash.h"
 #define TAM 200
@@ -15,6 +16,9 @@ private:
     int NumDeVerticesActuales;
 public:
     Grafo();
+    Grafo(Grafo<T>& otro);
+    Grafo<T>& operator=(Grafo<T>& otro);
+
     void Insertar(T Vo, T Vd);
     void LeerArchivo();
     void MostrarGrafo();
@@ -26,13 +30,96 @@ public:
     int EncontrarIndiceVec(T elemento);
     void EliminarDeVec(T elemento);
     void ContraerAristas(T u, T v);
-    
 };
 
 template<typename T>
 Grafo<T>::Grafo()
 {
     NumDeVerticesActuales = 0;
+}
+
+template<typename T>
+Grafo<T>::Grafo(Grafo<T>& otro)
+{
+    this->NumDeVerticesActuales = otro.NumDeVerticesActuales;
+
+    for (int i = 0; i < NumDeVerticesActuales; i++) {
+        this->vec[i] = otro.vec[i];
+    }
+
+    for (int i = 0; i < NumDeVerticesActuales; i++) {
+        string nombreNodo = vec[i];
+
+        Lista8<Vertice<T>>* lista = otro.grafo.accederHash(nombreNodo);
+        if (lista != NULL) {
+            Caja<Vertice<T>>* aux = lista->getPrimero();
+
+            while (aux != NULL) {
+                if (aux->getValor().getNombre() == nombreNodo) {
+                    Vertice<T> verticeCopia;
+                    verticeCopia.setNombre(nombreNodo);
+
+                    Lista8<string>& adyacencias = aux->getValor().getAdyacentes();
+                    Caja<string>* ady = adyacencias.getPrimero();
+                    while (ady != NULL) {
+                        verticeCopia.getAdyacentes().Insertar_Fin(ady->getValor());
+                        ady = ady->getSiguiente();
+                    }
+
+                    this->grafo.Insertar(verticeCopia);
+                    break;
+                }
+                aux = aux->getSiguiente();
+            }
+        }
+    }
+}
+
+template<typename T>
+Grafo<T>& Grafo<T>::operator=(Grafo<T>& otro)
+{
+    if (this != &otro) {
+        for (int i = 0; i < NumDeVerticesActuales; i++) {
+            Lista8<Vertice<T>>* lista = grafo.accederHash(vec[i]);
+            if (lista != NULL) {
+                lista->EliminarTodo();
+            }
+        }
+
+        this->NumDeVerticesActuales = otro.NumDeVerticesActuales;
+
+        for (int i = 0; i < NumDeVerticesActuales; i++) {
+            this->vec[i] = otro.vec[i];
+        }
+
+        for (int i = 0; i < NumDeVerticesActuales; i++) {
+            string nombreNodo = vec[i];
+
+            Lista8<Vertice<T>>* lista = otro.grafo.accederHash(nombreNodo);
+            if (lista != NULL) {
+                Caja<Vertice<T>>* aux = lista->getPrimero();
+
+                while (aux != NULL) {
+                    if (aux->getValor().getNombre() == nombreNodo) {
+                        Vertice<T> verticeCopia;
+                        verticeCopia.setNombre(nombreNodo);
+
+                        Lista8<string>& adyacencias = aux->getValor().getAdyacentes();
+                        Caja<string>* ady = adyacencias.getPrimero();
+                        while (ady != NULL) {
+                            verticeCopia.getAdyacentes().Insertar_Fin(ady->getValor());
+                            ady = ady->getSiguiente();
+                        }
+
+                        this->grafo.Insertar(verticeCopia);
+                        break;
+                    }
+                    aux = aux->getSiguiente();
+                }
+            }
+        }
+    }
+    return *this;
 }
 
 template<typename T>
@@ -46,14 +133,13 @@ void Grafo<T>::Insertar(T Vo, T Vd)
         {
             if (aux->getValor().getNombre() == Vo)
             {
-
                 Caja<string>* auxAdy = aux->getValor().getAdyacentes().getPrimero();
                 bool existe = false;
                 while (auxAdy != NULL)
                 {
-                    if (auxAdy->getValor() == Vd){
-                        existe = true; 
-                        break; 
+                    if (auxAdy->getValor() == Vd) {
+                        existe = true;
+                        break;
                     }
                     auxAdy = auxAdy->getSiguiente();
                 }
@@ -75,7 +161,7 @@ void Grafo<T>::LeerArchivo()
     ifstream archivo("MinCut.txt");
     if (archivo.is_open()) {
         string Arista, Adyacente;
-        int indexVec = 0; // para ir llenando vec[]
+        int indexVec = 0;
         while (archivo >> Arista)
         {
             vec[indexVec++] = Arista;
@@ -92,14 +178,12 @@ void Grafo<T>::LeerArchivo()
     {
         cout << "No se pudo abrir el archivo." << endl;
     }
-
 }
-
 
 template<typename T>
 void Grafo<T>::MostrarGrafo()
 {
-    grafo.MostrarHash2(vec, NumDeVerticesActuales); 
+    grafo.MostrarHash2(vec, NumDeVerticesActuales);
 }
 
 template<typename T>
@@ -138,10 +222,10 @@ inline int Grafo<T>::EncontrarIndiceVec(T elemento)
 {
     for (int i = 0; i < NumDeVerticesActuales; i++) {
         if (vec[i] == elemento) {
-            return i;  
+            return i;
         }
     }
-    return -1;  
+    return -1;
 }
 
 template<typename T>
@@ -149,52 +233,41 @@ inline void Grafo<T>::EliminarDeVec(T elemento)
 {
     int indice = EncontrarIndiceVec(elemento);
     if (indice != -1) {
-        vec[indice] = vec[NumDeVerticesActuales - 1]; // Mover al ultimo
+        vec[indice] = vec[NumDeVerticesActuales - 1];
         NumDeVerticesActuales--;
     }
 }
 
 template<typename T>
-inline void Grafo<T>::ContraerAristas(T u, T v) // U nodo que se elije y V la adyacencia de U
+inline void Grafo<T>::ContraerAristas(T u, T v)
 {
-    // Si el nodo y el adyacente no son iguales
     if (u != v) {
-        // Se busca en la hash ambos nodos
-        Lista8<Vertice<T>>* listaU = grafo.accederHash(u); 
+        Lista8<Vertice<T>>* listaU = grafo.accederHash(u);
         Lista8<Vertice<T>>* listaV = grafo.accederHash(v);
 
-        // Si existen las listas
         if (listaU != NULL && listaV != NULL) {
-            // Conseguir los nodos buscando en las coliciones del hash
             Caja<Vertice<T>>* nodoU = buscarVertice(listaU, u);
             Caja<Vertice<T>>* nodoV = buscarVertice(listaV, v);
 
             if (nodoU != NULL && nodoV != NULL) {
-                // Conseguimos sus listas de adyaciencia
                 Lista8<T>& adyU = nodoU->getValor().getAdyacentes();
                 Lista8<T>& adyV = nodoV->getValor().getAdyacentes();
 
-                // Eliminar nodo de la lista de adyaciencia 
                 while (adyU.EliminarValor(v)) {}
 
-                // Procesar cada adyacente del nodo a borrar
                 Caja<T>* adyAux = adyV.getPrimero();
                 while (adyAux != NULL) {
-                    T w = adyAux->getValor(); // Auxiliar para buscar cada uno de las adyaciencias de v
+                    T w = adyAux->getValor();
 
-                    if (w != u) { // No puede haber autociclos
-                        // Encontrar nodo w
+                    if (w != u) {
                         Lista8<Vertice<T>>* listaW = grafo.accederHash(w);
 
                         if (listaW != NULL) {
                             Caja<Vertice<T>>* nodoW = listaW->getPrimero();
 
                             while (nodoW != NULL) {
-                                // En la lista de w cambiamos v (Nodo a borrar) por u (Nodo donde se combinara) 
-
                                 Lista8<T>& adyW = nodoW->getValor().getAdyacentes();
 
-                                // Intercambiar valores iguales 
                                 Caja<T>* adyWaux = adyW.getPrimero();
                                 while (adyWaux != NULL) {
                                     if (adyWaux->getValor() == v)
@@ -206,7 +279,6 @@ inline void Grafo<T>::ContraerAristas(T u, T v) // U nodo que se elije y V la ad
                                 nodoW = nodoW->getSiguiente();
                             }
                         }
-                        // Insertar W
                         adyU.Insertar_Fin(w);
                     }
                     adyAux = adyAux->getSiguiente();

@@ -13,16 +13,17 @@ private:
 public:
     Vertice();
     Vertice(T Nombre);
+    Vertice(Vertice<T>& otra);
+    Vertice<T>& operator=(Vertice<T>& otra);
+
     T getNombre();
     void setNombre(T Nombre);
     Lista8<string>& getAdyacentes();
 
-    bool operator==( Vertice<T>& otro) const 
+    bool operator==(Vertice<T>& otro)
     {
         return Nombre == otro.Nombre;
     }
-
-    
 };
 
 template<typename T>
@@ -38,11 +39,25 @@ Vertice<T>::Vertice(T Nombre)
 }
 
 template<typename T>
+Vertice<T>::Vertice(Vertice<T>& otra) : Nombre(otra.Nombre), Adyacentes(otra.Adyacentes)
+{
+}
+
+template<typename T>
+Vertice<T>& Vertice<T>::operator=(Vertice<T>& otra)
+{
+    if (this != &otra) {
+        this->Nombre = otra.Nombre;
+        this->Adyacentes = otra.Adyacentes;
+    }
+    return *this;
+}
+
+template<typename T>
 inline T Vertice<T>::getNombre()
 {
     return Nombre;
 }
-
 
 template<typename T>
 void Vertice<T>::setNombre(T Nombre)
@@ -55,5 +70,3 @@ Lista8<string>& Vertice<T>::getAdyacentes()
 {
     return Adyacentes;
 }
-
-

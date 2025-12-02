@@ -17,17 +17,40 @@ private:
     Lista8<T> Vec[TAM];
 public:
     Hash();
+    Hash(Hash<T>& otra);
+    Hash<T>& operator=(Hash<T>& otra);
     ~Hash();
     int FuncionHash(string Nombre);
     Lista8<T>* accederHash(string& nombre);
     void Insertar(T objeto);
     bool Eliminar(string nombre);
     void MostrarHash();
-    void MostrarHash2(string vec[200],  int cantidad);
+    void MostrarHash2(string vec[200], int cantidad);
 };
 
 template<class T>
 Hash<T>::Hash() {}
+
+template<class T>
+Hash<T>::Hash(Hash<T>& otra)
+{
+    for (int i = 0; i < TAM; i++)
+    {
+        this->Vec[i] = otra.Vec[i];
+    }
+}
+
+template<class T>
+Hash<T>& Hash<T>::operator=(Hash<T>& otra)
+{
+    if (this != &otra) {
+        for (int i = 0; i < TAM; i++)
+        {
+            this->Vec[i] = otra.Vec[i];
+        }
+    }
+    return *this;
+}
 
 template<class T>
 Hash<T>::~Hash() {}
@@ -61,6 +84,7 @@ bool Hash<T>::Eliminar(string nombre)
 {
     return Vec[FuncionHash(nombre)].EliminarValor(nombre);
 }
+
 template<class T>
 void Hash<T>::MostrarHash()
 {
@@ -69,13 +93,14 @@ void Hash<T>::MostrarHash()
         Caja<T>* auxNodo = Vec[i].getPrimero();
         while (auxNodo != NULL)
         {
-            T& nodo = auxNodo->getValor(); 
+            T& nodo = auxNodo->getValor();
             cout << nodo.getNombre() << ": ";
             nodo.getAdyacentes().MostrarListaConsola();
             auxNodo = auxNodo->getSiguiente();
         }
     }
 }
+
 template<class T>
 void Hash<T>::MostrarHash2(string vec[200], int cantidad)
 {

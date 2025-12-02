@@ -12,6 +12,9 @@ private:
     int contador;
 public:
     Lista8();
+    Lista8(Lista8<T>& otra);
+    Lista8<T>& operator=(Lista8<T>& otra);
+
     void Insertar_Fin(T valor);
     void Insertar_Inicio(T valor);
 
@@ -28,7 +31,7 @@ public:
 
     bool EliminarValor(T valor);
     int getContador();
-    void MostrarListaConsola(); 
+    void MostrarListaConsola();
 };
 
 template<typename T>
@@ -37,6 +40,37 @@ inline Lista8<T>::Lista8()
     this->primero = NULL;
     this->ultimo = NULL;
     this->contador = 0;
+}
+
+template<typename T>
+inline Lista8<T>::Lista8(Lista8<T>& otra)
+{
+    this->primero = NULL;
+    this->ultimo = NULL;
+    this->contador = 0;
+
+    Caja<T>* aux = otra.primero;
+    while (aux != NULL)
+    {
+        this->Insertar_Fin(aux->getValor());
+        aux = aux->getSiguiente();
+    }
+}
+
+template<typename T>
+inline Lista8<T>& Lista8<T>::operator=(Lista8<T>& otra)
+{
+    if (this != &otra) {
+        this->EliminarTodo();
+
+        Caja<T>* aux = otra.primero;
+        while (aux != NULL)
+        {
+            this->Insertar_Fin(aux->getValor());
+            aux = aux->getSiguiente();
+        }
+    }
+    return *this;
 }
 
 template<typename T>
@@ -153,9 +187,9 @@ template<typename T>
 inline Caja<T>* Lista8<T>::buscar(T valor, Caja<T>*& aux)
 {
     Caja<T>* control = NULL;
-    while (aux != NULL) 
+    while (aux != NULL)
     {
-        if (valor == aux->getValor()) 
+        if (valor == aux->getValor())
         {
             control = aux;
             return control;
@@ -220,7 +254,7 @@ inline void Lista8<T>::MostrarListaConsola()
     while (aux != NULL)
     {
         if (!first) cout << ", ";
-        cout << aux->getValor(); 
+        cout << aux->getValor();
         first = false;
         aux = aux->getSiguiente();
     }

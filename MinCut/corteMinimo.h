@@ -2,117 +2,161 @@
 #include <cstdlib>
 #include <ctime>
 #include <string>
+#include <climits>
+#include <chrono>
+#include <vector>
+#include <algorithm>
 #include "Grafo.h"
 #include "Lista8.h"
 #include "Heap.h"
 
 using namespace std;
+using namespace std::chrono;  // Añadido aquí
 
 template<typename T>
 class corteMinimo
 {
 private:
-    Grafo<T> grafo; 
-    Heap<T>* HeapAuxiliar;
+    Grafo<T> grafoOriginal;
+
 public:
-	void leerArchivo();
+    void leerArchivo();
     Grafo<T> getGrafo();
     void FuncionKarger();
 
     corteMinimo()
     {
-      
         srand((unsigned int)time(NULL));
     }
 
-    
-    void setGrafo(Grafo<T>* g)
-    {
-        this->grafo = g;
-    }
-
-    
-    T sacarNodoAleatorio(int cantidadDeNodos)
+    T sacarNodoAleatorio(Grafo<T>& grafoParam, int cantidadDeNodos)
     {
         T Aux = T();
-        
-            T* vec = grafo.getVectorNodos();
-            int indice = rand() % cantidadDeNodos; //Posible cambio para que sea dinamico en caso de que contraiga lo requiera
-             Aux = vec[indice];
-        
+        if (cantidadDeNodos > 0) {
+            string* vec = grafoParam.getVectorNodos();
+            int indice = rand() % cantidadDeNodos;
+            Aux = vec[indice];
+        }
         return Aux;
     }
 
-    // saca una adyacencia aleatoria del nodo dado
-    T sacarAdyacenciaAleatoria(T nodo)
+    T sacarAdyacenciaAleatoria(Grafo<T>& grafoParam, T nodo)
     {
-		T Aux = T();
-        
-            // obtenemos la lista de vertices desde el Hash
-            Lista8<Vertice<T>>* lista = grafo.getHash().accederHash(nodo);
-            if (lista != NULL || lista->getPrimero() != NULL) {
-                Caja<Vertice<T>>* aux = lista->getPrimero();
-                while (aux != NULL)
-                {
-                    if (aux->getValor().getNombre() == nodo) break;
-                    aux = aux->getSiguiente();
-                }
+        T Aux = T();
 
-                if (aux != NULL) {
-                    Lista8<T>& adyacentes = aux->getValor().getAdyacentes();
-                    int n = adyacentes.getContador();
-                    if (n == 0) return T();
-
-                    int r = rand() % n;
-                    Caja<T>* ady = adyacentes.getPosicion(r);
-                    Aux = ady->getValor();
-                }
+        Lista8<Vertice<T>>* lista = grafoParam.getHash().accederHash(nodo);
+        if (lista != NULL && lista->getPrimero() != NULL) {
+            Caja<Vertice<T>>* aux = lista->getPrimero();
+            while (aux != NULL)
+            {
+                if (aux->getValor().getNombre() == nodo) break;
+                aux = aux->getSiguiente();
             }
-        
-		return Aux;
+
+            if (aux != NULL) {
+                Lista8<T>& adyacentes = aux->getValor().getAdyacentes();
+                int n = adyacentes.getContador();
+                if (n == 0) return T();
+
+                int r = rand() % n;
+                Caja<T>* ady = adyacentes.getPosicion(r);
+                Aux = ady->getValor();
+            }
+        }
+        return Aux;
     }
 };
 
 template<typename T>
 inline void corteMinimo<T>::leerArchivo()
 {
-	grafo.LeerArchivo();
+    grafoOriginal.LeerArchivo();
+    cout << "Grafo cargado con " << grafoOriginal.getNumDeVerticesActuales() << " nodos" << endl;
 }
 
 template<typename T>
 inline Grafo<T> corteMinimo<T>::getGrafo()
 {
-    return grafo;
+    return grafoOriginal;
 }
 
 template<typename T>
 inline void corteMinimo<T>::FuncionKarger()
 {
-  
+    // Iniciar medición de tiempo
+    auto inicio = high_resolution_clock::now();
+
+    int mejorCorte = INT_MAX;
+    int iteracionMejor = 0;
+    int b = 0;
+    leerArchivo();
+
    
-    grafo.MostrarGrafo();
+
+    for (int i = 0; i < 50000; i++)
+    {
+        cout << "\n--- Iteracion " << (i + 1) << " ---" << endl;
+
+        Grafo<T> grafoCopia = grafoOriginal;
 
         
-    
-    while (grafo.getNumDeVerticesActuales() > 2) 
-    {
 
-        string nodo = sacarNodoAleatorio(grafo.getNumDeVerticesActuales());
-        cout << "\nNodo aleatorio seleccionado: " << nodo << endl;
+        int contracciones = 0;
 
-        string ady = sacarAdyacenciaAleatoria(nodo);
-        if (!ady.empty())
-            cout << "Adyacencia aleatoria del nodo " << nodo << ": " << ady << endl;
-        else
-            cout << "El nodo " << nodo << " no tiene adyacencias." << endl;
+        while (grafoCopia.getNumDeVerticesActuales() > 2)
+        {
+            string nodo = sacarNodoAleatorio(grafoCopia, grafoCopia.getNumDeVerticesActuales());
+            string ady = sacarAdyacenciaAleatoria(grafoCopia, nodo);
+            if(b==0)  cout << "Nodos iniciales: " << "nodo: " << nodo << " Adyacente: " << ady << endl;
+           
+            if (!ady.empty()) {
+                b++;
+                grafoCopia.ContraerAristas(nodo, ady);
+                contracciones++;
+            }
+            else {
+                
+                break;
+            }
+        }
 
+        int corteActual = 0;
+        if (grafoCopia.getNumDeVerticesActuales() == 2) {
+            b = 0;
+            string* nodos = grafoCopia.getVectorNodos();
+            if (nodos != NULL) {
+                Lista8<Vertice<T>>* lista = grafoCopia.getHash().accederHash(nodos[0]);
+                if (lista != NULL && lista->getPrimero() != NULL) {
+                    Caja<Vertice<T>>* vertice = lista->getPrimero();
+                    while (vertice != NULL) {
+                        if (vertice->getValor().getNombre() == nodos[0]) {
+                            corteActual = vertice->getValor().getAdyacentes().getContador();
+                            break;
+                        }
+                        vertice = vertice->getSiguiente();
+                    }
+                }
+            }
+        }
 
-        grafo.ContraerAristas(nodo, ady);
-        //grafo.MostrarGrafo();
+        cout << "Contracciones: " << contracciones << ", Corte: " << corteActual;
 
+        if (corteActual < mejorCorte) {
+            mejorCorte = corteActual;
+            iteracionMejor = i + 1;
+            cout << " ¡NUEVO MEJOR CORTE!";
+        }
         cout << endl;
     }
-    
+
+    // Finalizar medición de tiempo
+    auto fin = high_resolution_clock::now();
+    auto duracion = duration_cast<milliseconds>(fin - inicio);
+
+    // Mostrar resultados
+    cout << "\n=== RESULTADOS ===" << endl;
+    cout << "Mejor corte minimo: " << mejorCorte << " aristas" << endl;
+    cout << "Iteracion del mejor corte: " << iteracionMejor << endl;
+    cout << "Tiempo total de ejecucion: " << duracion.count() << " milisegundos" << endl;
+    cout << "Tiempo total de ejecucion: " << duracion.count() / 1000.0 << " segundos" << endl;
 }
-
-
